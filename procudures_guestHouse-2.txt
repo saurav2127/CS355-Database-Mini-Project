@@ -1,0 +1,77 @@
+-- procedures -------------------------------------
+
+-- procedure for addresses today
+DELIMITER |
+create procedure addresses_display()
+begin
+    select * from addresses;
+end |
+DELIMITER ;
+
+-- procedure for department
+DELIMITER |
+create procedure department_display()
+begin
+    select * from department;
+end |
+DELIMITER ;
+
+
+-- procedure for room types
+DELIMITER |
+create procedure room_type_display()
+begin
+    select * from room_type;
+end |
+DELIMITER ;
+
+
+-- procedure for guesthouse services given
+DELIMITER |
+create procedure guestHouse_services_display()
+begin
+    select * from guestHouse_services;
+end |
+DELIMITER ;
+
+
+-- procedure for employee details
+DELIMITER |
+create procedure employees_display()
+begin
+    select * from employees;
+end |
+DELIMITER ;
+
+
+-- show availability of rooms
+DELIMITER |
+
+create procedure show_rooms_availability()
+begin
+    select room_number,available from rooms_mapping;
+end |
+DELIMITER ;
+
+-- procedure fro determining total booking in a month
+DELIMITER |
+CREATE procedure moth_specific_booking(in a int)  
+BEGIN
+	SELECT guest_first_name, guest_last_name,guest_contact_number
+	FROM guests
+	WHERE guest_id IN 
+		( SELECT distinct guests_guest_id 
+		  FROM bookings
+		  WHERE MONTH(check_in_date) = a);	
+END |
+DELIMITER ;
+
+-- procedure for finding total booking in a day
+DELIMITER |
+create procedure bookings_today(in a date,in b int)
+begin
+SELECT SUM(total_rooms_booked) AS 'Total Rooms Booked' 	
+	FROM bookings 
+	WHERE booking_date = a AND guestHouse_guestHouse_id = b;	 
+end |
+DELIMITER ;

@@ -1,0 +1,46 @@
+-- DROP TRIGGER IF EXISTS bookings_after_delete;
+DELIMITER //
+
+CREATE TRIGGER bookings_after_delete 
+AFTER DELETE ON bookings FOR EACH ROW
+
+BEGIN
+INSERT INTO Bookings_Audit VALUES
+(NULL, OLD.booking_id, OLD.booking_date, OLD.duration_of_stay, OLD.check_in_date,
+OLD.check_out_date, OLD.booking_payment_type, OLD.total_rooms_booked,
+OLD.guestHouse_guestHouse_id, OLD.guests_guest_id, OLD.employees_emp_id,
+OLD.total_amount,"DELETED", NOW());
+END//
+
+DELIMITER ;
+
+
+-- DROP TRIGGER IF EXISTS bookings_after_insert;
+DELIMITER //
+
+CREATE TRIGGER bookings_after_insert  
+AFTER INSERT ON bookings FOR EACH ROW
+
+BEGIN
+INSERT INTO Bookings_Audit VALUES
+(NEW.booking_id, NEW.booking_date, NEW.duration_of_stay, NEW.check_in_date, 
+NEW.check_out_date, NEW.booking_payment_type, NEW.total_rooms_booked,
+NEW.guestHouse_guestHouse_id, NEW.guests_guest_id, NEW.employees_emp_id, 
+NEW.total_amount,"INSERTED", NOW());
+END//
+
+DELIMITER ;
+
+
+-- trigger to change availability of rooms
+DELIMITER |
+
+CREATE TRIGGER change_availablity  
+AFTER INSERT ON bookings FOR EACH ROW
+
+BEGIN
+update rooms_mapping set rooms_mapping.available = 0
+where rooms_mapping.room_number = new.guestHouse_guestHouse_id;
+END |
+
+DELIMITER ;
